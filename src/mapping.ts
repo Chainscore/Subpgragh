@@ -1,89 +1,87 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { BigInt } from "@graphprotocol/graph-ts";
 import {
-  Oracle,
-  AuthorizedSendersAdded,
-  AuthorizedSendersRemoved,
-  CancelOracleRequest,
-  ConfirmationCommitted,
-  OracleRequest,
-  OracleResponse,
-  OwnershipTransferred,
-  RequestConfirmed,
-  Staked,
-  Withdrawn
-} from "../generated/Oracle/Oracle"
-import { ExampleEntity } from "../generated/schema"
+	Oracle,
+	AuthorizedSendersAdded,
+	AuthorizedSendersRemoved,
+	CancelOracleRequest,
+	ConfirmationCommitted,
+	OracleRequest,
+	OracleResponse,
+	OwnershipTransferred,
+	RequestConfirmed,
+	Staked,
+	Withdrawn,
+} from "../generated/Oracle/Oracle";
+import { Request } from "../generated/schema";
+//import { ReqConfirmed } from "../generated/schema";
+import { ConfirmationCommittment } from "../generated/schema";
 
 export function handleAuthorizedSendersAdded(
-  event: AuthorizedSendersAdded
-): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
-
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
-
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.sender = event.params.sender
-  entity.addedBy = event.params.addedBy
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.getAuthorizedSenders(...)
-  // - contract.getExpiryTime(...)
-  // - contract.getToken(...)
-  // - contract.isAuthorizedSender(...)
-  // - contract.isRequestConfirmed(...)
-  // - contract.minConfirmations(...)
-  // - contract.owner(...)
-  // - contract.requests(...)
-  // - contract.rewards(...)
-  // - contract.withdrawable(...)
-}
+	event: AuthorizedSendersAdded
+): void {}
 
 export function handleAuthorizedSendersRemoved(
-  event: AuthorizedSendersRemoved
+	event: AuthorizedSendersRemoved
 ): void {}
 
 export function handleCancelOracleRequest(event: CancelOracleRequest): void {}
 
+//===================
 export function handleConfirmationCommitted(
-  event: ConfirmationCommitted
-): void {}
+	event: ConfirmationCommitted
+): void {
 
-export function handleOracleRequest(event: OracleRequest): void {}
+	let confirmationcommitted = ConfirmationCommittment.load(
+		event.params.requestId.toHex()
+	);
+
+	if (!confirmationcommitted) {
+		confirmationcommitted = new ConfirmationCommittment(
+			event.params.requestId.toHex()
+		);
+	}
+
+	confirmationcommitted.sender = event.params.node;
+	confirmationcommitted.request = event.params.requestId.toHex();
+	confirmationcommitted.data = event.params.scoreData;
+	confirmationcommitted.save();
+}
+
+
+
+//===================
+export function handleOracleRequest(event: OracleRequest): void {
+	let request = Request.load(event.params.requestId.toHex());
+
+	if (!request) {
+		request = new Request(event.params.requestId.toHex());
+	}
+
+	request.specId = event.params.specId;
+	request.sender = event.params.sender;
+	request.payment = event.params.payment;
+	request.callbackFunctionId = event.params.callbackFunctionId;
+	request.callbackAddress = event.params.account;
+	request.cancelExpiration = event.params.cancelExpiration;
+
+	request.save();
+}
 
 export function handleOracleResponse(event: OracleResponse): void {}
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+//===============
+export function handleRequestConfirmed(event: RequestConfirmed): void {
+	let request = Request.load(event.params.requestId.toHex());
 
-export function handleRequestConfirmed(event: RequestConfirmed): void {}
+	if (!request) {
+		request = new Request(event.params.requestId.toHex());
+	}
+
+	request.finalData = event.params.finalData;
+
+	request.save();
+}
 
 export function handleStaked(event: Staked): void {}
 
