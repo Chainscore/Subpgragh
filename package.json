@@ -4,13 +4,26 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ prajaktathomas/chain-score",
-    "create-local": "graph create --node http://localhost:8020/ prajaktathomas/chain-score",
-    "remove-local": "graph remove --node http://localhost:8020/ prajaktathomas/chain-score",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 prajaktathomas/chain-score"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/subgraph",
+    "create-local": "graph create --node http://localhost:8020/ chainscore/subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ chainscore/subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 chainscore/subgraph",
+
+    "prepare:harmony": "mustache ./config/harmony.json template.yaml > subgraph.yaml",
+    "prepare:harmonyTestnet": "mustache ./config/harmonyTestnet.json template.yaml > subgraph.yaml",
+
+    "prepare:aurora": "mustache ./config/aurora.json template.yaml > subgraph.yaml",
+    "prepare:auroraTestnet": "mustache ./config/auroraTestnet.json template.yaml > subgraph.yaml",
+
+    "prepare:avax": "mustache ./config/avax.json template.yaml > subgraph.yaml",
+    "prepare:avaxTestnet": "mustache ./config/avaxTestnet.json template.yaml > subgraph.yaml"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.0",
-    "@graphprotocol/graph-ts": "0.26.0"
+    "@graphprotocol/graph-ts": "0.26.0",
+    "mustache": "^4.2.0"
+  },
+  "devDependencies": {
+    "matchstick-as": "^0.4.2"
   }
 }

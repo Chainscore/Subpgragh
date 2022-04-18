@@ -7,7 +7,7 @@ type Request @entity {
   callbackAddress: Bytes!         # address
   cancelExpiration: BigInt!
   confirmations: [ConfirmationCommittment!] ! @derivedFrom(field: "request")
-  finalData: BigInt!
+  finalData: BigInt
 }
 
 type ConfirmationCommittment @entity {
@@ -16,10 +16,3 @@ type ConfirmationCommittment @entity {
   data: BigInt!                   # score data
   request: Request!
 }
-
-      
-      
-       
-       
-      
-       

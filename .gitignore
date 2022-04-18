@@ -2,3 +2,4 @@ generated
 yarn.lock
 build
 node_modules
+subgraph.yaml
