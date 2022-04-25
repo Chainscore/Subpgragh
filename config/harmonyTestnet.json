@@ -1,5 +1,5 @@
 {
     "network": "harmonyTestnet",
-    "address": "",
-    "startBlock": 0
+    "address": "0xDa70E7e7d4324dEdA0d75cc233a0706D17C6Ed19",
+    "startBlock": 24182630
 }

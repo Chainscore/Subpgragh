@@ -24,8 +24,8 @@ dataSources:
               - Staked
               - Withdrawn
           abis:
-              - name: Oracle
-                file: ./abis/Oracle.json
+              - name: ChainScore
+                file: ./abis/ChainScore.json
           eventHandlers:
               - event: AuthorizedSendersAdded(address,address)
                 handler: handleAuthorizedSendersAdded

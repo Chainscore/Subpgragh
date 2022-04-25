@@ -1,17 +1,16 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import {
-	Oracle,
+	ChainScore,
 	AuthorizedSendersAdded,
 	AuthorizedSendersRemoved,
-	CancelOracleRequest,
+	CancelRequest,
 	ConfirmationCommitted,
-	OracleRequest,
-	OracleResponse,
+	NewRequest,
 	OwnershipTransferred,
 	RequestConfirmed,
 	Staked,
 	Withdrawn,
-} from "../generated/Oracle/Oracle";
+} from "../generated/ChainScore/ChainScore";
 import { Request } from "../generated/schema";
 //import { ReqConfirmed } from "../generated/schema";
 import { ConfirmationCommittment } from "../generated/schema";
@@ -24,7 +23,7 @@ export function handleAuthorizedSendersRemoved(
 	event: AuthorizedSendersRemoved
 ): void {}
 
-export function handleCancelOracleRequest(event: CancelOracleRequest): void {}
+export function handleCancelRequest(event: CancelRequest): void {}
 
 //===================
 export function handleConfirmationCommitted(
@@ -43,14 +42,14 @@ export function handleConfirmationCommitted(
 
 	confirmationcommitted.sender = event.params.node;
 	confirmationcommitted.request = event.params.requestId.toHex();
-	confirmationcommitted.data = event.params.scoreData;
+	confirmationcommitted.data = event.params.data;
 	confirmationcommitted.save();
 }
 
 
 
 //===================
-export function handleOracleRequest(event: OracleRequest): void {
+export function handleNewRequest(event: NewRequest): void {
 	let request = Request.load(event.params.requestId.toHex());
 
 	if (!request) {
@@ -66,8 +65,6 @@ export function handleOracleRequest(event: OracleRequest): void {
 
 	request.save();
 }
-
-export function handleOracleResponse(event: OracleResponse): void {}
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 //===============
