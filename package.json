@@ -8,12 +8,21 @@
     "create-local": "graph create --node http://localhost:8020/ chainscore/subgraph",
     "remove-local": "graph remove --node http://localhost:8020/ chainscore/subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 chainscore/subgraph",
+
     "prepare:harmony": "mustache ./config/harmony.json template.yaml > subgraph.yaml",
-    "prepare:harmonyTestnet": "mustache ./config/harmonyTestnet.json template.yaml > subgraph.yaml",
     "prepare:aurora": "mustache ./config/aurora.json template.yaml > subgraph.yaml",
-    "prepare:auroraTestnet": "mustache ./config/auroraTestnet.json template.yaml > subgraph.yaml",
     "prepare:avax": "mustache ./config/avax.json template.yaml > subgraph.yaml",
-    "prepare:avaxTestnet": "mustache ./config/avaxTestnet.json template.yaml > subgraph.yaml"
+    
+    "prepare:harmonyTestnet": "mustache ./config/harmonyTestnet.json template.yaml > subgraph.yaml",
+    "prepare:fuji": "mustache ./config/fuji.json template.yaml > subgraph.yaml",
+    "prepare:rinkeby": "mustache ./config/rinkeby.json template.yaml > subgraph.yaml",
+    "prepare:mumbai": "mustache ./config/mumbai.json template.yaml > subgraph.yaml",
+    "prepare:aurora-testnet": "mustache ./config/auroraTestnet.json template.yaml > subgraph.yaml",
+
+    "deploy:rinkeby": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-rinkeby",
+    "deploy:fuji": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-fuji",
+    "deploy:mumbai": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-mumbai",
+    "deploy:aurora-testnet": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-aurora-testnet"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.0",
