@@ -1,18 +1,81 @@
+type ChainScore @entity {
+  "1"
+  id: Bytes!
+  address: Bytes!
+  owner: Bytes!
+  totalValidatorCount: BigInt!
+  totalUserCount: BigInt!
+  totalRequestCount: BigInt!
+}
+
+type ChainScoreDayData @entity {
+  "Day ID"
+  id: Bytes!
+  day: Int!
+  validatorCount: BigInt!
+  userCount: BigInt!
+  requestCount: BigInt!
+}
+
 type Request @entity {
-  id: ID!
-  specId: Bytes!
-  sender: Bytes!                  # address
+  "{Tx ID} + {logIndex} + {Request ID}"
+  id: Bytes!
+  "Spec ID"
+  spec: Spec!
+  "Address that called"
+  sender: User!
+  "Fees"
   payment: BigInt!
+  "FUnction to call"
   callbackFunctionId: Bytes!
-  callbackAddress: Bytes!         # address
-  cancelExpiration: BigInt!
+  "Address to analyser"
+  address: Bytes!
+  expiration: BigInt!
   confirmations: [ConfirmationCommittment!] ! @derivedFrom(field: "request")
+  confirmed: Boolean!
   finalData: BigInt
+  "creation tx"
+  createdAt: Transaction!
+  "created at timestamp"
+  timestamp: BigInt!
+}
+
+type Transaction @entity {
+  "{Tx ID} + {logIndex}"
+  id: Bytes!
+  hash: Bytes!
+  timestamp: Int!
+}
+
+type User @entity {
+  "{User address}"
+  id: Bytes!
+  requests: [Request!]! @derivedFrom(field: "sender")
+  activeSince: Transaction!
+}
+
+type Spec @entity {
+  "{Spec ID}"
+  id: Bytes!
+  requests: [Request!]! @derivedFrom(field: "spec")
+  createdAt: Transaction!
+}
+
+type Validator @entity {
+  id: Bytes!
+  commitments: [ConfirmationCommittment!]! @derivedFrom(field: "sender")
+  activeSince: Transaction!
 }
 
 type ConfirmationCommittment @entity {
-  id: ID!
-  sender: Bytes!                  # address
-  data: BigInt!                   # score data
+  "{Tx ID} + {logIndex} + {Request ID}"
+  id: Bytes!
+  "Validator address"
+  sender: Validator!
+  "Score data"
+  data: BigInt!
+  "Request"
   request: Request!
+  "transaction"
+  createdAt: Transaction!
 }

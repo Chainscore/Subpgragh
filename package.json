@@ -1,28 +1,41 @@
 {
   "name": "chain-score",
+  "version": "0.0.1",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/subgraph",
-    "create-local": "graph create --node http://localhost:8020/ chainscore/subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ chainscore/subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 chainscore/subgraph",
 
-    "prepare:harmony": "mustache ./config/harmony.json template.yaml > subgraph.yaml",
-    "prepare:aurora": "mustache ./config/aurora.json template.yaml > subgraph.yaml",
-    "prepare:avax": "mustache ./config/avax.json template.yaml > subgraph.yaml",
-    
-    "prepare:harmonyTestnet": "mustache ./config/harmonyTestnet.json template.yaml > subgraph.yaml",
+    "create:local": "graph create --node http://localhost:8020/ chainscore/subgraph",
+    "remove:local": "graph remove --node http://localhost:8020/ chainscore/subgraph",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 chainscore/subgraph",
+
+    "prepare:ht": "mustache ./config/harmony-testnet.json template.yaml > subgraph.yaml",
     "prepare:fuji": "mustache ./config/fuji.json template.yaml > subgraph.yaml",
     "prepare:rinkeby": "mustache ./config/rinkeby.json template.yaml > subgraph.yaml",
     "prepare:mumbai": "mustache ./config/mumbai.json template.yaml > subgraph.yaml",
-    "prepare:aurora-testnet": "mustache ./config/auroraTestnet.json template.yaml > subgraph.yaml",
+    "prepare:aurora-testnet": "mustache ./config/aurora-testnet.json template.yaml > subgraph.yaml",
 
-    "deploy:rinkeby": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-rinkeby",
-    "deploy:fuji": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-fuji",
-    "deploy:mumbai": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-mumbai",
-    "deploy:aurora-testnet": "graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-aurora-testnet"
+    "deploy:rinkeby": "yarn prepare:rinkeby && graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-rinkeby",
+    "deploy:fuji": "yarn prepare:fuji && graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-fuji",
+    "deploy:mumbai": "yarn prepare:mumbai && graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-mumbai",
+    "deploy:aurora-testnet": "yarn prepare:aurora-testnet && graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-aurora-testnet",
+    "deploy:ht": "yarn prepare:ht && graph deploy --node https://api.thegraph.com/deploy/ chainscore/chainscore-harmony-testnet",
+
+    "create:harmony-testnet:server": "graph create --node http://65.20.75.160:6020/ chainscore/chainscore-harmony-testnet",
+    "create:rinkeby:server": "graph create --node http://65.20.75.160:8020/ chainscore/chainscore-rinkeby",
+    "create:fuji:server": "graph create --node http://65.20.75.160:8020/ chainscore/chainscore-fuji",
+    "create:mumbai:server": "graph create --node http://65.20.75.160:8020/ chainscore/chainscore-mumbai",
+    "create:aurora-testnet:server": "graph create --node http://65.20.75.160:8020/ chainscore/chainscore-aurora-testnet",
+
+    "deploy:harmony-testnet:server": "graph deploy --node http://65.20.75.160:6020/ --ipfs http://65.20.75.160:5001 chainscore/chainscore-harmony-testnet",
+    "deploy:rinkeby:server": "graph deploy --node http://65.20.75.160:8020/ --ipfs http://65.20.75.160:5001 chainscore/chainscore-rinkeby",
+    "deploy:fuji:server": "graph deploy --node http://65.20.75.160:8020/ --ipfs http://65.20.75.160:5001 chainscore/chainscore-fuji",
+    "deploy:mumbai:server": "graph deploy --node http://65.20.75.160:8020/ --ipfs http://65.20.75.160:5001 chainscore/chainscore-mumbai",
+    "deploy:aurora-testnet:server": "graph deploy --node http://65.20.75.160:8020/ --ipfs http://65.20.75.160:5001 chainscore/chainscore-aurora-testnet",
+
+    "create:ht:custom": "graph create --node http://65.20.81.124:8020 chainscore/chainscore-harmony-testnet",
+    "deploy:ht:custom": "yarn prepare:ht && yarn create:ht:custom && graph deploy --node http://65.20.81.124:8020 --ipfs http://65.20.81.124:5001 chainscore/chainscore-harmony-testnet"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.29.0",
