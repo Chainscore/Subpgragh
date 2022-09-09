@@ -6,6 +6,8 @@ type ChainScore @entity {
   totalValidatorCount: BigInt!
   totalUserCount: BigInt!
   totalRequestCount: BigInt!
+  minConfirmations: Int!
+  gasPrice: BigInt!
 }
 
 type ChainScoreDayData @entity {
@@ -18,7 +20,7 @@ type ChainScoreDayData @entity {
 }
 
 type Request @entity {
-  "{Tx ID} + {logIndex} + {Request ID}"
+  "{Request ID}"
   id: Bytes!
   "Spec ID"
   spec: Spec!
@@ -44,6 +46,10 @@ type Transaction @entity {
   "{Tx ID} + {logIndex}"
   id: Bytes!
   hash: Bytes!
+  
+  txFee: BigInt
+  gasPrice: BigInt
+  
   timestamp: Int!
 }
 
@@ -64,7 +70,14 @@ type Spec @entity {
 type Validator @entity {
   id: Bytes!
   commitments: [ConfirmationCommittment!]! @derivedFrom(field: "sender")
+
+  isAuthorized: Boolean!
+  stake: BigInt!
+  addedBy: Bytes!
+  
   activeSince: Transaction!
+  activeSinceTimestamp: Int!
+  lastActive: Int!
 }
 
 type ConfirmationCommittment @entity {
@@ -78,4 +91,6 @@ type ConfirmationCommittment @entity {
   request: Request!
   "transaction"
   createdAt: Transaction!
+  "timestamp"
+  timestamp: Int!
 }

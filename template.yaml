@@ -31,15 +31,13 @@ dataSources:
                 handler: handleAuthorizedSendersAdded
               - event: AuthorizedSendersRemoved(address,address)
                 handler: handleAuthorizedSendersRemoved
-              - event: CancelRequest(indexed bytes32)
-                handler: handleCancelRequest
               - event: ConfirmationCommitted(bytes32,address,uint256)
                 handler: handleConfirmationCommitted
               - event: NewRequest(address,indexed bytes32,bytes32,uint256,bytes4,uint256,address)
                 handler: handleNewRequest
               - event: OwnershipTransferred(indexed address,indexed address)
                 handler: handleOwnershipTransferred
-              - event: RequestConfirmed(bytes32,uint256)
+              - event: RequestConfirmed(bytes32,uint256,bool)
                 handler: handleRequestConfirmed
               - event: Staked(address,address,uint256)
                 handler: handleStaked

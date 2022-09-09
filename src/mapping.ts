@@ -1,9 +1,8 @@
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes } from "@graphprotocol/graph-ts";
 import {
   ChainScore,
   AuthorizedSendersAdded,
   AuthorizedSendersRemoved,
-  CancelRequest,
   ConfirmationCommitted,
   NewRequest,
   OwnershipTransferred,
@@ -25,13 +24,20 @@ import {
 
 export function handleAuthorizedSendersAdded(
   event: AuthorizedSendersAdded
-): void {}
+): void {
+  let val = getOrCreateValidator(event.params.sender as Bytes, event);
+  val.isAuthorized = true;
+  val.save();
+}
 
 export function handleAuthorizedSendersRemoved(
   event: AuthorizedSendersRemoved
-): void {}
+): void {
+  let val = getOrCreateValidator(event.params.sender as Bytes, event);
+  val.isAuthorized = false;
+  val.save();
+}
 
-export function handleCancelRequest(event: CancelRequest): void {}
 
 //===================
 export function handleConfirmationCommitted(
@@ -62,6 +68,7 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {
   c.owner = event.params.newOwner;
   c.save();
 }
+
 //===============
 export function handleRequestConfirmed(event: RequestConfirmed): void {
   let request = getOrCreateRequest(event.params.requestId, event);
@@ -71,6 +78,14 @@ export function handleRequestConfirmed(event: RequestConfirmed): void {
   request.save();
 }
 
-export function handleStaked(event: Staked): void {}
+export function handleStaked(event: Staked): void {
+  let val = getOrCreateValidator(event.params.sender as Bytes, event);
+  val.stake = val.stake.plus(event.params.tokenAmt);
+  val.save();
+}
 
-export function handleWithdrawn(event: Withdrawn): void {}
+export function handleWithdrawn(event: Withdrawn): void {
+  let val = getOrCreateValidator(event.params.sender as Bytes, event);
+  val.stake = val.stake.minus(event.params.tokenAmt);
+  val.save();
+}

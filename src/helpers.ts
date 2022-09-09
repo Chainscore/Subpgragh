@@ -1,18 +1,24 @@
-import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, Bytes, dataSource, ethereum } from "@graphprotocol/graph-ts";
 import { ConfirmationCommittment, Request, User, Transaction, Validator, Spec, ChainScore, ChainScoreDayData } from '../generated/schema';
 
+export const BI_ZERO = BigInt.fromI32(0)
+export const BI_ONE = BigInt.fromI32(1)
+export const BD_ZERO = BigDecimal.fromString("0")
+export const BD_ONE = BigDecimal.fromString("1")
+export const BY_ZERO = Bytes.fromI32(0)
 
 export function getOrCreateCS(): ChainScore {
-    let id = Bytes.fromI32(0)
-    let controller = ChainScore.load(id);
+    let controller = ChainScore.load(BY_ZERO);
 
     if(!controller){
-        controller = new ChainScore(id)
-        controller.address = Bytes.fromI32(0)
-        controller.totalRequestCount = BigInt.fromI32(0)
-        controller.totalUserCount = BigInt.fromI32(0)
-        controller.totalValidatorCount = BigInt.fromI32(0)
-        controller.owner = Bytes.fromI32(0)
+        controller = new ChainScore(BY_ZERO)
+        controller.address = dataSource.address()
+        controller.totalRequestCount = BI_ZERO
+        controller.totalUserCount = BI_ZERO
+        controller.totalValidatorCount = BI_ZERO
+        controller.owner = BY_ZERO
+        controller.minConfirmations = 1
+        controller.gasPrice = BI_ZERO
         controller.save()
     }
     return controller
@@ -26,26 +32,26 @@ export function getOrCreateCSDayData(event: ethereum.Event): ChainScoreDayData {
     if(!controller){
         controller = new ChainScoreDayData(id)
         controller.day = dayId
-        controller.requestCount = BigInt.fromI32(0)
-        controller.userCount = BigInt.fromI32(0)
-        controller.validatorCount = BigInt.fromI32(0)
+        controller.requestCount = BI_ZERO
+        controller.userCount = BI_ZERO
+        controller.validatorCount = BI_ZERO
         controller.save()
     }
     return controller
 }
 
 export function getOrCreateRequest(requestId: Bytes, event: ethereum.Event): Request {
-    let id = event.transaction.hash.concat(requestId).concatI32(event.transactionLogIndex.toI32())
+    let id = requestId
     let request = Request.load(id);
 
     if(!request){
         request = new Request(id)
-        request.spec = Bytes.fromI32(0)
-        request.sender = Bytes.fromI32(0)
-        request.payment = BigInt.fromI32(0)
-        request.callbackFunctionId = Bytes.fromI32(0)
-        request.address = Bytes.fromI32(0)
-        request.expiration = BigInt.fromI32(0)
+        request.spec = BY_ZERO
+        request.sender = BY_ZERO
+        request.payment = BI_ZERO
+        request.callbackFunctionId = BY_ZERO
+        request.address = BY_ZERO
+        request.expiration = BI_ZERO
         request.confirmed = false
         request.createdAt = getOrCreateTransaction(event).id
         request.timestamp = event.block.timestamp;
@@ -70,10 +76,11 @@ export function getOrCreateConfirmation(requestId: Bytes, event: ethereum.Event)
 
     if(!conf){
         conf = new ConfirmationCommittment(id)
-        conf.sender = Bytes.fromI32(0)
-        conf.data = BigInt.fromI32(0)
-        conf.request = Bytes.fromI32(0)
+        conf.sender = BY_ZERO
+        conf.data = BI_ZERO
+        conf.request = BY_ZERO
         conf.createdAt = getOrCreateTransaction(event).id
+        conf.timestamp = event.block.timestamp.toI32()
         conf.save()
     }
     return conf
@@ -84,7 +91,7 @@ export function getOrCreateUser(id: Bytes, event: ethereum.Event|null = null): U
 
     if(!user){
         user = new User(id)
-        user.activeSince = Bytes.fromI32(0)
+        user.activeSince = BY_ZERO
         if(event){
             user.activeSince = getOrCreateTransaction(event).id
 
@@ -106,7 +113,9 @@ export function getOrCreateValidator(id: Bytes, event: ethereum.Event | null = n
 
     if(!val){
         val = new Validator(id)
-        val.activeSince = Bytes.fromI32(0)
+        val.activeSince = BY_ZERO
+        val.isAuthorized = false
+        val.stake = BI_ZERO
         if(event){
             val.activeSince = getOrCreateTransaction(event).id
 
@@ -129,7 +138,7 @@ export function getOrCreateSpec(id: Bytes, event: ethereum.Event|null = null): S
 
     if(!spec){
         spec = new Spec(id)
-        spec.createdAt = Bytes.fromI32(0)
+        spec.createdAt = BY_ZERO
         if(event){
             spec.createdAt = getOrCreateTransaction(event).id
         }
